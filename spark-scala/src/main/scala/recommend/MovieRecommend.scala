@@ -8,11 +8,6 @@ import org.apache.spark.sql.SparkSession
   */
 object MovieRecommend {
 
-  def add(i: Int, j: Int): Int = {
-    i + j
-  }
-
-
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder().appName("movie recommend").config("spark.shuffle.compress", "true").getOrCreate()
     val movies = spark.read.option("header", true).csv("hdfs://localhost:9000//data/recommend/movies.csv")
