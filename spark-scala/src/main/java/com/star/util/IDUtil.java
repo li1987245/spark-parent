@@ -1,3 +1,5 @@
+package com.star.util;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;

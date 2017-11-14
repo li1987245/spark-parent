@@ -2,7 +2,7 @@
     
     <property>
       <name>fs.defaultFS</name>
-      <value>hdfs://172.168.1.106</value>
+      <value>hdfs://172.168.1.102</value>
       <final>true</final>
     </property>
     

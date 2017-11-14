@@ -1,3 +1,4 @@
+import com.star.util.{IDUtil, RandomValue}
 import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.util.Random

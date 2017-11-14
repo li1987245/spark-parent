@@ -1,11 +1,17 @@
+import com.star.util.{IDUtil, RandomValue}
+
 import scala.util.Random
 
 /**
+  *
   * Created by jinwei on 17-10-31.
   */
 object Demo {
   def main(args: Array[String]): Unit = {
     val data = List("Scala,1,2", "Hadoop,1,2", "Spark,1,2")
+    import scala.collection.mutable.Set
+//    var movieSet=Set("Hitch","Poltergeist")
+//    movieSet +="Shrek"
     //1条to多条
 //    data.flatMap(_.toList).foreach(println)
     val g = new IDUtil()
