@@ -1,6 +1,5 @@
 import java.util
 
-import com.star.util.IdcardValidator
 import org.apache.spark.{SparkConf, SparkContext}
 //引入scala和java转换
 import scala.collection.JavaConversions._
@@ -28,9 +27,9 @@ object CalculateIdCard {
     val signSet = List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "X")
 
     val sparkConf = new SparkConf().setAppName("cal idCard")
-//    sparkConf.setMaster("yarn-client")
-//    sparkConf.set("spark.yarn.jar",
-//      "hdfs://172.168.1.106/hdp/apps/2.5.0.0-1245/spark/spark-hdp-assembly.jar")
+    sparkConf.setMaster("yarn-client")
+    sparkConf.set("spark.yarn.jars",
+      "hdfs://localhost:8020/user/spark2/jars/*.jar")
     val sc = SparkContext.getOrCreate(sparkConf)
 
     val areaRDD = sc.makeRDD(areaCodeSet)
