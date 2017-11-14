@@ -31,7 +31,7 @@ object CalculateIdCard {
     sparkConf.set("spark.yarn.jars",
       "hdfs://localhost:8020/user/spark2/jars/*.jar")
     val sc = SparkContext.getOrCreate(sparkConf)
-
+    sc.setLogLevel("WARN")
     val areaRDD = sc.makeRDD(areaCodeSet)
 
     val rdd = areaRDD.flatMap(x => {
