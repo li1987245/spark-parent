@@ -79,6 +79,7 @@
                         <configuration>
                             <includes>
                                 <include>**/*.scala</include>
+                                <include>**/*.java</include>
                             </includes>
                         </configuration>
                     </execution>

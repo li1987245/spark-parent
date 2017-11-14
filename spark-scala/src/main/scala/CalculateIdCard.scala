@@ -28,10 +28,10 @@ object CalculateIdCard {
     val signSet = List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "X")
 
     val sparkConf = new SparkConf().setAppName("cal idCard")
-    sparkConf.setMaster("yarn-client")
-    sparkConf.set("spark.yarn.jar",
-      "hdfs://172.168.1.106/hdp/apps/2.5.0.0-1245/spark/spark-hdp-assembly.jar")
-    val sc = new SparkContext(sparkConf)
+//    sparkConf.setMaster("yarn-client")
+//    sparkConf.set("spark.yarn.jar",
+//      "hdfs://172.168.1.106/hdp/apps/2.5.0.0-1245/spark/spark-hdp-assembly.jar")
+    val sc = SparkContext.getOrCreate(sparkConf)
 
     val areaRDD = sc.makeRDD(areaCodeSet)
 
@@ -39,21 +39,21 @@ object CalculateIdCard {
       //年份
       var tmp: Set[String] = Set()
       yearSet.foreach(y => {
-        tmp += (x.toString + y)
+        tmp += (x.toString + y).toString
       })
       tmp
     }).flatMap(x => {
       //月份
       var tmp: Set[String] = Set()
       monthSet.foreach(y => {
-        tmp += (if (y < 10) x.toString + "0" + y else x.toString + y)
+        tmp += (if (y < 10) x.toString + "0" + y else x.toString + y).toString
       })
       tmp
     }).flatMap(x => {
       //日期
       var tmp: Set[String] = Set()
       daySet.foreach(y => {
-        tmp += (if (y < 10) x.toString + "0" + y else x.toString + y)
+        tmp += (if (y < 10) x.toString + "0" + y else x.toString + y).toString
       })
       tmp
     }).flatMap(x => {
@@ -64,14 +64,14 @@ object CalculateIdCard {
         if (y < 10)
           s = x.toString + "00" + y
         else if (y < 100 && y > 9) x.toString + "0" + y else x.toString + y
-        tmp += s
+        tmp += s.toString
       })
       tmp
     }).flatMap(x => {
       //sign
       var tmp: Set[String] = Set()
       signSet.foreach(y => {
-        tmp += (x.toString + y)
+        tmp += (x.toString + y).toString
       })
       tmp
     })
@@ -83,7 +83,8 @@ object CalculateIdCard {
         val md5 = MD5.hash(y + x + salt)
         if (md5Set.contains(md5)) {
           b = true
-          return
+          //return导致java.io.NotSerializableException: java.lang.Object
+//          return
         }
 
       })
