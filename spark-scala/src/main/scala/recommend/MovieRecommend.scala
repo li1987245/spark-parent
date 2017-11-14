@@ -24,12 +24,11 @@ object MovieRecommend {
     println(movies.first().mkString("\t"))
     val rdd = movies.flatMap {
       x => {
-        var resut:List[Any] = List()
+        var resut: List[Any] = List()
         val seq = x.toSeq
         val t = seq.apply(2).toString.split("\\|")
         for (i <- 0 until t.length)
-          resut.++(List(seq(0),seq(1),t(i)))
-        resut
+          yield resut.++(List(seq(0), seq(1), t(i)))
       }
     }
     println(rdd.toDF().first())
