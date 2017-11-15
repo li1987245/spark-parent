@@ -15,8 +15,8 @@ object CalculateIdCard {
     val salt = "MRct8RVFmCqEHxRUL2yjqJ73a2ExSbW8"
     //身份证1-6位
     val areaCodeSet = IdcardValidator.getAreaCodeSet
-    //身份证7-10 1980-2000
-    val yearSet = List.range(1970, 2000)
+    //身份证7-10 1970-1980
+    val yearSet = List.range(1970, 1980)
     //月份11-12 1-12
     val monthSet = List.range(1, 13)
     //日期13-14 1-31
@@ -27,11 +27,11 @@ object CalculateIdCard {
     val signSet = List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "X")
 
     val sparkConf = new SparkConf().setAppName("cal idCard")
-    sparkConf.setMaster("yarn-client")
+    sparkConf.setMaster("yarn")
     sparkConf.set("spark.yarn.jars",
       "hdfs://localhost:8020/user/spark2/jars/*.jar")
     val sc = SparkContext.getOrCreate(sparkConf)
-    sc.setLogLevel("WARN")
+    sc.setLogLevel("warn")
     val areaRDD = sc.makeRDD(areaCodeSet)
 
     val rdd = areaRDD.flatMap(x => {
