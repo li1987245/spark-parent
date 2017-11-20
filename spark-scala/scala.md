@@ -48,9 +48,22 @@ rdd.filter(x => {
 val sqlContext = new SQLContext(sc)
 //1.java反射创建df
 case class Book(name: String, type0: Int, price: Int)
+def parse_Book(line: String) : Option[Book] = {
+  val apache_pattern = """^(\S+) (\d{3}) (\d{3})""".r
+
+  line match {
+    case apache_pattern(a, b, c) => {
+      Some(Book(a, b.toInt, c.toInt))
+    }
+    case _ => None
+  }
+}
 import sqlContext.implicits._
 val book = rdd.map(_.split(",")).map(p => Book(p(0), p(1).trim.toInt, p(2).trim.toInt)).toDF()
-book.filter("").write.save("")
+//as String,df to dataset
+book.as[String].flatMap(parse_Book)
+//df to rdd
+book.rdd
 //2.指定schema
 val schemaString = "name,type0,price"
 val schema = StructType(schemaString.split(",").map(fieldName => StructField(fieldName, StringType, true)))
