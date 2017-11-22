@@ -178,7 +178,9 @@ Broadcast Join的条件有以下几个：
 被广播的表需要小于 spark.sql.autoBroadcastJoinThreshold 所配置的值，默认是10M （或者加了broadcast join的hint）
 基表不能被广播，比如 left outer join 时，只能广播右表
 禁用广播sqlContext.sql("SET spark.sql.autoBroadcastJoinThreshold = -1")
-
+2.val joinDF=rateDF.join(movieDF,$"movieId" === $"movieId")
+org.apache.spark.sql.AnalysisException: Reference 'movieId' is ambiguous
+修改为：val joinDF=rateDF.join(movieDF,Seq("movieId"))即可避免列名冲突
 ```
 - 统计
 ```markdown
