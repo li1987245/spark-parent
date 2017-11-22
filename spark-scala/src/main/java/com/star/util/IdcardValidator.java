@@ -3913,7 +3913,7 @@ public class IdcardValidator implements Serializable {
 
     public static void main(String[] args) throws Exception {
         String idcard15 = "130321860311519";
-        String idcard18 = "330481198010010015";//
+        String idcard18 = "510183198011090084";//
         // 15位身份证  
         System.out.println(isValidatedAllIdcard(idcard15));
         // 18位身份证  
