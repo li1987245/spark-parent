@@ -1,11 +1,7 @@
 package com.star.util;
 
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class IDUtil implements Serializable {
 
@@ -3603,6 +3599,23 @@ public class IDUtil implements Serializable {
         }
         int[] c = { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
         char[] r = { '1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2' };
+        int[] n = new int[17];
+        int result = 0;
+        for (int i = 0; i < n.length; i++) {
+            n[i] = Integer.parseInt(chars[i] + "");
+        }
+        for (int i = 0; i < n.length; i++) {
+            result += c[i] * n[i];
+        }
+        return r[result % 11];
+    }
+
+    public static String calcSignNum(char[] chars) {
+        if (chars.length < 17) {
+            return "x";
+        }
+        int[] c = { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
+        String[] r = { "1", "0", "X", "9", "8", "7", "6", "5", "4", "3", "2" };
         int[] n = new int[17];
         int result = 0;
         for (int i = 0; i < n.length; i++) {

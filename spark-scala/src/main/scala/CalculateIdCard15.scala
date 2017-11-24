@@ -1,5 +1,3 @@
-import java.util
-
 import com.star.util.{IDUtil, IdcardValidator, StringUtil}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
@@ -15,7 +13,7 @@ deserialized：反序列化，其逆过程序列化（Serialization）是java提
 replication：备份数（在多个节点上备份）
   * Created by jinwei on 17-11-14.
   */
-object CalculateIdCard {
+object CalculateIdCard15 {
 
   def sparkDemo(): Unit = {
     val nameSet = List("刘玲萍", "陈为", "杨云电", "李红梅", "李定国", "蒋德明", "周良君", "施后力", "李杨", "胡碧新", "王永泉", "易玲", "罗于红", "黄红", "林丹文", "刘伟", "李云峰", "昌宏顺", "李国强", "李春华", "李翔", "王潇颖", "林亦根", "黄玉顺", "王萍萍", "王述科", "陈玉生", "刘伟", "李长春", "蒲丽娟", "罗跃鸣", "郑跃权", "李小玲", "曾祥品", "陈青群", "葛剑平", "李涛", "熊鑫", "李红霞", "李习中", "顾振德", "张华", "许志琼", "童永", "黄明")
@@ -23,23 +21,15 @@ object CalculateIdCard {
     val salt = "MRct8RVFmCqEHxRUL2yjqJ73a2ExSbW8"
     //身份证1-6位
     val areaCodeSet = IdcardValidator.getAreaCodeSet
-    //身份证7-10 1967-2010
-    val yearSet = List.range(1957, 2000)
-//    val yearSet = List.range(1990, 2017)
-    //月份11-12 1-12
+    //身份证7-8 57-99
+    val yearSet = List.range(57, 100)
+    //月份9-10 1-12
     val monthSet = List.range(1, 13)
-    //日期13-14 1-31
+    //日期11-12 1-31
     val daySet = List.range(1, 32)
-    //顺序15-17（派出所和17位性别顺序）
+    //顺序13-15（顺序号）
     val seqSet = List.range(1, 1000)
-//    val seqSet = List.range(200, 400)
-//    val seqSet = List.range(400, 600)
-//    val seqSet = List.range(600, 800)
-//    val seqSet = List.range(800, 1000)
-    //18
-    val signSet = List(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "X", "x")
-
-    val sparkConf = new SparkConf().setAppName("cal idCard")
+    val sparkConf = new SparkConf().setAppName("cal idCard 15")
     //设置spark.default.parallelism参数，防止spark计算出来的partition非常巨大
 //    sparkConf.set("spark.default.parallelism", "40")
     sparkConf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
@@ -62,35 +52,6 @@ object CalculateIdCard {
       }
       result.iterator
     })
-
-    val yearRDD: RDD[String] = sc.makeRDD(yearSet).map(x => x.toString)
-    val monthRDD: RDD[String] = sc.makeRDD(monthSet).map(x => (if (x < 10) "0" + x else x).toString)
-    val dayRDD: RDD[String] = sc.makeRDD(daySet).map(x => (if (x < 10) "0" + x else x).toString)
-    val seqRDD: RDD[String] = sc.makeRDD(seqSet).map(x => if (x < 10)
-      "00" + x
-    else if (x < 100 && x > 9) "0" + x else x.toString)
-    val signRDD: RDD[String] = sc.makeRDD(signSet).map(x => x.toString)
-
-    //    val idCardRDD = areaRDD.cartesian(yearRDD).map(x => {
-    //      x._1 + x._2
-    //    }).cartesian(monthRDD).map(x => {
-    //      x._1 + x._2
-    //    }).cartesian(dayRDD).map(x => {
-    //      x._1 + x._2
-    //    }).cartesian(seqRDD).map(x => {
-    //      x._1 + x._2
-    //    }).cartesian(signRDD).map(x => {
-    //      x._1 + x._2
-    //    })
-    val nameRDD: RDD[String] = sc.makeRDD(nameSet)
-    //    val rdd = nameRDD.cartesian(idCardRDD)
-    //    rdd.filter(x => {
-    //      val md5 = MD5.hash(x._1 + x._2 + salt)
-    //      if (md5Set.contains(md5))
-    //        true
-    //      else
-    //        false
-    //    }).saveAsTextFile("/tmp/idCard")
 
     val rdd0 = areaRDD.flatMap(x => {
       //年份
@@ -124,17 +85,10 @@ object CalculateIdCard {
           s = x.toString + "0" + y
         else
           s = x.toString + y
-        val sign = IDUtil.calcSignNum(s.toCharArray)
-        s = s+sign
         tmp += s.toString
       })
       tmp
     })
-//    val rdd = rdd0.repartition(1200)
-    //释放缓存
-//    rdd0.unpersist()
-//    rdd.cache()
-//    rdd.count()
     rdd0.filter(x => {
       var b = false
       //姓名
@@ -143,13 +97,11 @@ object CalculateIdCard {
         if (md5Set.contains(md5)) {
           println(x)
           b = true
-          //return导致java.io.NotSerializableException: java.lang.Object
-          //          return
         }
 
       })
       b
-    }).saveAsTextFile("/tmp/idCard6")
+    }).saveAsTextFile("/tmp/idCard15")
 
   }
 
