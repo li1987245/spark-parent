@@ -141,11 +141,77 @@ counts = textfile.flatMap(lambda x: x.split('|')).map(lambda x: (x,1)).reduceByK
 scala
 rdd.flatMap(_.split(" ")).map((_,1)).reduceByKey(_+_).filter(_._2 > 5).sortBy(_._2,false).collect.foreach(println)
 ```
+- map
+```
+val movieDF=spark.read.option("header",true).csv("/user/ljw/data/recommend/movies.csv")
+val movieDS=movieDF.map(x=>x.mkString(",")).first
+```
+- flatmap
+```
+val moviesDF = movieDF.flatMap(x => {
+      import scala.collection.mutable.Set
+      val id = x.getString(0)
+      val name = x.getString(1)
+      val tags = x.getString(2)
+      val arr = tags.split("\\|")
+      for (i <- 0 until arr.size)
+        yield Row.fromSeq(List(id,name,arr.apply(i)))
+//        yield Row(id, name, arr.apply(i))
+    })
+Unable to find encoder for type stored in a Dataset.  Primitive types (Int, String, etc) and Product types (case classes) are supported by importing spark.implicits._  Support for serializing other types will be added in future releases.解决方案：
+1. 可以把movieDF转为rdd再操作，movieDF.rdd.flatMap
+2. 
+case class Movie(id:Int,name:String,tag:String)
+import spark.implicits._
+yield Movie(id.toInt, name, arr.apply(i))
+```
+- mapPartition
+```
+val tagDF= moviesDF.mapPartitions(x=>{
+      var result:List[String] = List()
+      while (x.hasNext){
+        result=result.::(x.next().tag)
+      }
+      result.iterator
+    })
+```
 - mapPartitionsWithIndex
 ```
 val data = rdd 
-.mapPartitionsWithIndex((index, element) => if (index == 0) it.drop(1) else it) // skip header 
+.mapPartitionsWithIndex((index, it) => if (index == 0) it.drop(index) else it) // skip header 
 .map(_.split(",").to[List]) .map(row)
+```
+- coalesce&repartition
+```
+tagDF.coalesce(1) 不shuffle
+tagDF.repartition(10) shuffle
+```
+- randomSplit
+```
+# 获取第一个分片的数量，当array的总和不为1时，会进行归一化处理
+tagDF.randomSplit(Array(1,2,2))(0).count
+```
+- union
+```
+Returns a new Dataset containing union of rows in this Dataset and another Dataset.
+```
+- intersection
+```
+该函数返回两个RDD的交集，并且去重,RDD特有
+def intersection(other: RDD[T], numPartitions: Int): RDD[T]
+```
+- subtract
+```
+返回在RDD中出现，并且不在otherRDD中出现的元素，不去重,RDD特有
+def subtract(other: RDD[T], p: Partitioner)(implicit ord: Ordering[T] = null): RDD[T]
+```
+- zip
+```
+zip函数用于将两个RDD组合成Key/Value形式的RDD,这里默认两个RDD的partition数量以及元素数量都相同，否则会抛出异常,RDD特有
+```
+- distinct
+```
+rdd.distinct或dataset.distinct
 ```
 - sortBy
 ```
@@ -177,7 +243,8 @@ df.join(df1,df._c0==df1._c11,'outer').count()
 Broadcast Join的条件有以下几个：
 被广播的表需要小于 spark.sql.autoBroadcastJoinThreshold 所配置的值，默认是10M （或者加了broadcast join的hint）
 基表不能被广播，比如 left outer join 时，只能广播右表
-禁用广播sqlContext.sql("SET spark.sql.autoBroadcastJoinThreshold = -1")
+largedataframe.join(broadcast(smalldataframe), "key")
+禁用广播spark.sql("SET spark.sql.autoBroadcastJoinThreshold = -1")
 2.val joinDF=rateDF.join(movieDF,$"movieId" === $"movieId")
 org.apache.spark.sql.AnalysisException: Reference 'movieId' is ambiguous
 修改为：val joinDF=rateDF.join(movieDF,Seq("movieId"))即可避免列名冲突
@@ -324,6 +391,7 @@ vim $SPARK_HOME/conf/spark-defaults.conf
 
 - Performance Tuning
 ```markdown
+spark.default.parallelism 设置task数目，防止spark自动计算patition过大
 Caching Data In Memory
 Spark SQL can cache tables using an in-memory columnar format by calling spark.catalog.cacheTable("tableName") or dataFrame.cache(). Then Spark SQL will scan only required columns and will automatically tune compression to minimize memory usage and GC pressure. You can call spark.catalog.uncacheTable("tableName") to remove the table from memory.
 
@@ -343,4 +411,14 @@ Timeout in seconds for the broadcast wait time in broadcast joins
 
 spark.sql.autoBroadcastJoinThreshold	10485760 (10 MB)	Configures the maximum size in bytes for a table that will be broadcast to all worker nodes when performing a join. By setting this value to -1 broadcasting can be disabled. Note that currently statistics are only supported for Hive Metastore tables where the command ANALYZE TABLE <tableName> COMPUTE STATISTICS noscan has been run.
 spark.sql.shuffle.partitions	200	Configures the number of partitions to use when shuffling data for joins or aggregations.
+
+
+
+
+spark.akka.frameSize 1000     　　　　　　　 　　　　   　　 集群间通信 一帧数据的大小,设置太小可能会导致通信延迟
+spark.akka.timeout 100　　　　 　　　　         　　　　       通信等待最长时间(秒为单位)
+spark.akka.heartbeat.pauses 600　　　　　　　　　　    　  心跳失败最大间隔(秒为单位)
+spark.serializer org.apache.spark.serializer.KryoSerializer    序列化方式(sprak自己的实现方式)
+spark.sql.autoBroadcastJoinThreshold -1　　　　　　　　　  禁止自动broadcast表
+spark.shuffle.consolidateFiles true　　　　　　　　　　　　　shuffle 自动合并小文件
 ```

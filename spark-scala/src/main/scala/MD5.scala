@@ -8,4 +8,10 @@ object MD5 {
     m.update(b, 0, b.length)
     new java.math.BigInteger(1, m.digest()).toString(16)
   }
+
+  def main(args: Array[String]): Unit = {
+    var list:List[Int] = List()
+    list.::(1)
+    println(list)
+  }
 }
