@@ -208,6 +208,26 @@ def subtract(other: RDD[T], p: Partitioner)(implicit ord: Ordering[T] = null): R
 - zip
 ```
 zip函数用于将两个RDD组合成Key/Value形式的RDD,这里默认两个RDD的partition数量以及元素数量都相同，否则会抛出异常,RDD特有
+scala> tagDF.rdd.zip(moviesDF.rdd).first
+res12: (String, Movie) = (Documentary,Movie(1,Toy Story (1995),Adventure))
+zipPartitions:
+zipPartitions函数将多个RDD按照partition组合成为新的RDD，该函数需要组合的RDD具有相同的分区数，但对于每个分区内的元素数量没有要求。
+zipWithIndex:
+def zipWithIndex(): RDD[(T, Long)]
+该函数将RDD中的元素和这个元素在RDD中的ID（索引号）组合成键/值对。
+scala> tagDF.rdd.zipWithIndex.first
+res13: (String, Long) = (Documentary,0)
+zipWithUniqueId:
+zipWithUniqueId
+def zipWithUniqueId(): RDD[(T, Long)]
+该函数将RDD中元素和一个唯一ID组合成键/值对，该唯一ID生成算法如下：
+每个分区中第一个元素的唯一ID值为：该分区索引号，
+每个分区中第N个元素的唯一ID值为：(前一个元素的唯一ID值) + (该RDD总的分区数)
+```
+- partitionBy
+```
+def partitionBy(partitioner: Partitioner): RDD[(K, V)]
+该函数根据partitioner函数生成新的ShuffleRDD，将原RDD重新分区。
 ```
 - distinct
 ```
