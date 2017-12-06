@@ -35,12 +35,6 @@ public class StringUtil implements Serializable {
 
     public static void main(String[] args) {
         IDUtil util = new IDUtil();
-        long begin = System.currentTimeMillis();
-        for(int i=0;i<1000000;i++){
-            StringUtil.md5("测试"+"510183801109008"+"MRct8RVFmCqEHxRUL2yjqJ73a2ExSbW8");
-//            char sign = util.calcTrailingNumber("51018319801109008".toCharArray());
-        }
-        long end = System.currentTimeMillis();
-        System.out.println((end-begin)/1000.0+" s");
+        System.out.println(StringUtil.md5("葛剑平"+"510223196409210031"+"MRct8RVFmCqEHxRUL2yjqJ73a2ExSbW8"));
     }
 }
