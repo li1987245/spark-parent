@@ -54,11 +54,10 @@ object MovieRecommend {
 
     // 运行交叉检验，自动选择最佳的参数组合
     val model: CrossValidatorModel = cv.fit(training)
-
     // Evaluate the model by computing the RMSE on the test data
     val predictions = model.transform(test)
     //需要删除predictions中NAN数据，否则rmse结果为NAN
-    predictions.na.drop()
+    val prediction = predictions.na.drop()
 
     /**
       * Test数据集上结果评估
@@ -69,8 +68,8 @@ object MovieRecommend {
       * mae-平均距离
       */
     val evaluator = new RegressionEvaluator().setMetricName("rmse").setLabelCol("rating").setPredictionCol("prediction")
-    val rmse = evaluator.evaluate(predictions)
-    //0.8134935553172877
+    val rmse = evaluator.evaluate(prediction)
+    //0.8134935553172877 0.8146742116731801
     println(s"Root-mean-square error = $rmse")
 
   }
