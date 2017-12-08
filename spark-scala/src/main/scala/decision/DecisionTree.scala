@@ -6,6 +6,8 @@ import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
 import org.apache.spark.ml.feature.{IndexToString, StringIndexer, VectorIndexer}
 import org.apache.spark.sql.SparkSession
 /**
+  * 分类算法 数据符合LabeledPoint格式，label为double类型，feature为vector类型，vector分为dense(密集)、sparse(稀疏)
+  * Vectors向量构造器、Matrices矩阵构造器
   * Created by jinwei on 17-12-7.
   */
 object DecisionTree {
@@ -13,7 +15,7 @@ object DecisionTree {
     val spark = SparkSession.builder().appName("DecisionTree").config("spark.shuffle.compress", "true").getOrCreate()
 
     // Load the data stored in LIBSVM format as a DataFrame.
-    val data = spark.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
+    val data = spark.read.format("libsvm").load("/data/decision/sample_libsvm_data.txt")
 
     // Index labels, adding metadata to the label column.
     // Fit on whole dataset to include all labels in index.

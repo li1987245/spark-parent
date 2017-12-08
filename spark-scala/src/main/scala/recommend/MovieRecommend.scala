@@ -6,7 +6,7 @@ import org.apache.spark.ml.param.ParamMap
 import org.apache.spark.ml.recommendation.ALS
 import org.apache.spark.ml.tuning.{CrossValidator, CrossValidatorModel, ParamGridBuilder}
 import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.{SQLContext, SparkSession}
+import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 
 /**
   * http://spark.apache.org/docs/latest/configuration.html
@@ -58,7 +58,6 @@ object MovieRecommend {
     val predictions = model.transform(test)
     //需要删除predictions中NAN数据，否则rmse结果为NAN
     val prediction = predictions.na.drop()
-
     /**
       * Test数据集上结果评估
       * setLabelCol要和als设置的setRatingCol一致，不然会报错
