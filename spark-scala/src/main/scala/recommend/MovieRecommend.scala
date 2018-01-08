@@ -13,14 +13,13 @@ import org.apache.spark.sql.{Row, SQLContext, SparkSession}
   * Created by jinwei on 17-11-1.
   */
 object MovieRecommend {
-
+  case class Rating(userId: Int, movieId: Int, rating: Float, timestamp: Long)
   def main(args: Array[String]): Unit = {
     val conf = new SparkConf().setAppName("movie recommend")
     val sc = new SparkContext(conf)
     //2.0
     val spark = SparkSession.builder().appName("movie recommend").config("spark.shuffle.compress", "true").getOrCreate()
     import spark.implicits._
-    case class Rating(userId: Int, movieId: Int, rating: Float, timestamp: Long)
     val ratings = spark.read.option("header", true).csv("/data/recommend/ratings.csv").map(row => {
       Rating(row.getString(0).toInt, row.getString(1).toInt, row.getString(2).toFloat, row.getString(3).toLong)
     })
