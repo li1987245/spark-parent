@@ -29,7 +29,7 @@ public class ProcessTest {
         InputStream is = p.getInputStream();
         InputStream error = p.getErrorStream();
         BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("utf-8")), 512);
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 int count = 0;
@@ -46,7 +46,9 @@ public class ProcessTest {
                 }
                 System.out.println("总数：\t" + count);
             }
-        }).start();
+        });
+        t.setDaemon(true);
+        t.start();
         br.lines().forEach(new Consumer<String>() {
             @Override
             public void accept(String s) {
