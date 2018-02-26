@@ -50,6 +50,13 @@
             <artifactId>spark-mllib_${spark.artifact}</artifactId>
             <version>${spark.version}</version>
         </dependency>
+        <!--xml 读取-->
+        <dependency>
+            <groupId>com.databricks</groupId>
+            <artifactId>spark-xml_2.11</artifactId>
+            <version>0.4.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

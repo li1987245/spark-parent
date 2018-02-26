@@ -20,7 +20,6 @@ object MovieRecommend {
     //2.0
     val spark = SparkSession.builder().appName("movie recommend").config("spark.shuffle.compress", "true").getOrCreate()
     import spark.implicits._
-
     val ratings = spark.read.option("header", true).csv("/data/recommend/ratings.csv").map(row => {
       Rating(row.getString(0).toInt, row.getString(1).toInt, row.getString(2).toFloat, row.getString(3).toLong)
     })
