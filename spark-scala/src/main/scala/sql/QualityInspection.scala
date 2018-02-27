@@ -24,11 +24,9 @@ object QualityInspection {
   case class Result(col: String, rule: String, flag: Boolean)
 
   def main(args: Array[String]): Unit = {
-    val spark = SparkSession
-      .builder()
-      .appName("Spark SQL basic example")
+    val spark = SparkSession.builder().appName("Spark SQL basic example").getOrCreate()
       //      .config("spark.some.config.option", "some-value")
-      .getOrCreate()
+//      .getOrCreate()
     import spark.implicits._
     import spark.sql
     //    val rule:util.HashMap[String,util.Set] = new util.HashMap()
