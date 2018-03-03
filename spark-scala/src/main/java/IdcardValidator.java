@@ -1,3 +1,5 @@
+package com.star.util;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -3910,13 +3912,6 @@ public class IdcardValidator implements Serializable {
     }
 
     public static void main(String[] args) throws Exception {
-        String idcard15 = "130321860311519";
-        String idcard18 = "330481198010010015";//
-        // 15位身份证  
-        System.out.println(isValidatedAllIdcard(idcard15));
-        // 18位身份证  
-        System.out.println(isValidatedAllIdcard(idcard18));
-        // 15位身份证转18位身份证  
-        System.out.println(convertIdcarBy15bit(idcard15));
+        System.out.println(IdcardValidator.getAreaCodeSet().size());
     }
 }  
