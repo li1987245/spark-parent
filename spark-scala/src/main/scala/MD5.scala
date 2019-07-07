@@ -2,7 +2,7 @@
   * Created by jinwei on 17-11-14.
   */
 object MD5 {
-  def hash(s: String) = {
+  def hash(s: String): String = {
     val m = java.security.MessageDigest.getInstance("MD5")
     val b = s.getBytes("UTF-8")
     m.update(b, 0, b.length)

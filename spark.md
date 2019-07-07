@@ -250,6 +250,13 @@ implicit val sortIntegerByString = new Ordering[String]{
 | a.compare(b)} 
 rdd.sortByKey().collect
 ```
+- 二次排序
+```markdown
+1.构造class实现Ordered类并重写compare方法
+2.生产需排序rdd时，使用SecondarySortKey作为key
+eg：
+sc.map(x=>(new SecondarySortKey(x(1),x(2)),x)).sortByKey().collect()
+```
 #### spark sql
 - 过滤
 ```markdown
@@ -281,6 +288,11 @@ df.createOrReplaceTempView('web_site')
 sqlDF=spark.sql('select * from web_site limit 1')
 sqlDF.show()
 ```
+- explain
+```markdown
+df.groupby('_c2').agg({"_c2":"count"}).explain(true)
+```
+
 - spark sql
 ```markdown
 spark-sql --master yarn  --driver-cores 1 --hiveconf "spark.sql.warehouse.dir=hdfs://localhost:9000/user/hive/warehouse" 
@@ -368,6 +380,33 @@ df = spark.sql("SELECT * FROM parquet.`examples/src/main/resources/users.parquet
 df.write.bucketBy(42, "name").sortBy("age").saveAsTable("people_bucketed")
 df.write.partitionBy("favorite_color").format("parquet").save("namesPartByColor.parquet")
 ```
+
+##### functions
+- udf 自定义函数
+
+- agg 聚合函数
+
+- datetime 日期函数
+
+- sort 排序
+
+- normal 非聚合函数
+
+- math 数学函数
+
+- windows 窗口函数
+```markdown
+时间窗口函数是左开右闭的，支持微秒级精度
+1. 时间、窗口时间
+df.groupBy(window($"time","1 minute"),$"stockId").agg(mean("price"))
+2. 时间、窗口时间、滑动时间
+df.groupBy(window($"time","1 minute","10 seconds"),$"stockId").agg(mean("price")) //每隔10秒，每分钟时间窗口的平均股价
+```
+- string 
+
+- collection
+
+
 #### spark streaming
 - streaming
 ```
@@ -441,4 +480,11 @@ spark.akka.heartbeat.pauses 600　　　　　　　　　　    　  心跳失�
 spark.serializer org.apache.spark.serializer.KryoSerializer    序列化方式(sprak自己的实现方式)
 spark.sql.autoBroadcastJoinThreshold -1　　　　　　　　　  禁止自动broadcast表
 spark.shuffle.consolidateFiles true　　　　　　　　　　　　　shuffle 自动合并小文件
+```
+- 优化技巧
+```markdown
+1. 巧用cache（需要unpersist）
+2. map join
+将数据使用broadcast广播到executor后关联
+
 ```
