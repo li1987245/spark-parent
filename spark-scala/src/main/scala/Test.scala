@@ -8,7 +8,7 @@ object Test {
 
 
   class IntWritable(_value: Int) {
-    def value = _value
+    def value: Int = _value
 
     def +(that: IntWritable): IntWritable = {
       new IntWritable(that.value + value)
@@ -22,9 +22,9 @@ object Test {
 
   implicit def intToStr(i: Int): String = i.toString
 
-  implicit def intToWritable(int: Int) = new IntWritable(int)
+  implicit def intToWritable(int: Int): IntWritable = new IntWritable(int)
 
-  implicit def writableToInt(that: IntWritable) = that.value
+  implicit def writableToInt(that: IntWritable): Int = that.value
 
   def main(args: Array[String]): Unit = {
     val regex = "http(s?)://(.*?).com.*".r

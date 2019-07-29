@@ -75,7 +75,7 @@ object Demo {
 //      .config("spark.some.config.option", "some-value")
       .getOrCreate()
     import spark.implicits._
-    val movieDF = spark.read.option("header", true).csv("/user/ljw/data/recommend/movies.csv")
+    val movieDF = spark.read.option("header", value = true).csv("/user/ljw/data/recommend/movies.csv")
     val moviesDF = movieDF.flatMap(x => {
       val id = x.getString(0)
       val name = x.getString(1)
