@@ -1,10 +1,10 @@
 import scala.language.implicitConversions
 import scala.util.matching.Regex
+
 /**
   * Created by jinwei on 17-12-13.
   */
-object Test{
-
+object Test {
 
 
   class IntWritable(_value: Int) {
@@ -37,7 +37,13 @@ object Test{
     print_str(11)
     val result1 = new IntWritable(10) + 10
     val result2 = 10 + new IntWritable(10)
-    val fruit = Fruit((s:String) => println(s))
+    val fruit = Fruit((s: String) => println(s))
     fruit.out(fruit.getName)
+    for {i <- 1 to 3
+         if i % 2 == 0
+    }
+      yield {
+        i + 1
+      }
   }
 }
