@@ -1,5 +1,7 @@
 import scala.language.implicitConversions
 import scala.util.matching.Regex
+import scala.tools.reflect.ToolBox
+import scala.reflect.runtime._
 /**
   * Created by jinwei on 17-12-13.
   */
@@ -19,6 +21,11 @@ object Test{
 
     println(msg)
   }
+
+//  def dyRun[T](script:String):T={
+//    val cm = universe.runtimeMirror(getClass.getClassLoader)
+//    val tb = cm.mkToolBox()
+//  }
 
   implicit def intToStr(i: Int): String = i.toString
 
