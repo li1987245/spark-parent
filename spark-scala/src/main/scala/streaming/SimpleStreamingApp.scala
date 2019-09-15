@@ -4,6 +4,8 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
   * 用Scala写的一个简单的Spark Streaming应用
+  * nc -lk 9999
+  * spark-shell 方式: val ssc=new StreamingContext(sc,Seconds(10))
   */
 object SimpleStreamingApp {
   def main(args: Array[String]) {

@@ -1,12 +1,10 @@
 import scala.language.implicitConversions
 import scala.util.matching.Regex
-import scala.tools.reflect.ToolBox
-import scala.reflect.runtime._
+
 /**
   * Created by jinwei on 17-12-13.
   */
-object Test{
-
+object Test {
 
 
   class IntWritable(_value: Int) {
@@ -21,11 +19,6 @@ object Test{
 
     println(msg)
   }
-
-//  def dyRun[T](script:String):T={
-//    val cm = universe.runtimeMirror(getClass.getClassLoader)
-//    val tb = cm.mkToolBox()
-//  }
 
   implicit def intToStr(i: Int): String = i.toString
 
@@ -44,7 +37,13 @@ object Test{
     print_str(11)
     val result1 = new IntWritable(10) + 10
     val result2 = 10 + new IntWritable(10)
-    val fruit = Fruit((s:String) => println(s))
+    val fruit = Fruit((s: String) => println(s))
     fruit.out(fruit.getName)
+    for {i <- 1 to 3
+         if i % 2 == 0
+    }
+      yield {
+        i + 1
+      }
   }
 }
